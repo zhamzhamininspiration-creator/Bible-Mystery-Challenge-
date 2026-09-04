@@ -1,271 +1,334 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bible Mystery Challenge</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Chronicle: Unlimited Bible Trivia</title>
+    <link href="https://googleapis.com" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0a0e14;
+            --bg-card: #121824;
+            --gold: #dfb76c;
+            --gold-bright: #ffd993;
+            --text-white: #f8fafc;
+            --text-dim: #94a3b8;
+            --border: rgba(223, 183, 108, 0.2);
+            --success: #10b981;
+            --danger: #ef4444;
+        }
 
-<style>
-* {
-  box-sizing: border-box;
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #14002e, #3b176d, #17002f);
-  color: white;
-  min-height: 100vh;
-}
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-white);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-image: radial-gradient(circle at 50% 50%, #162235 0%, #0a0e14 100%);
+        }
 
-.container {
-  width: 94%;
-  max-width: 650px;
-  margin: auto;
-  padding: 25px 0;
-}
+        .wrapper {
+            background-color: var(--bg-card);
+            max-width: 700px;
+            width: 100%;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            position: relative;
+        }
 
-header {
-  text-align: center;
-  padding: 20px 10px;
-}
+        .wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
 
-header h1 {
-  margin: 0;
-  font-size: 30px;
-}
+        .screen {
+            padding: 40px;
+            display: none;
+        }
 
-header p {
-  color: #ddd;
-  line-height: 1.5;
-}
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.4s ease forwards;
+        }
 
-.card {
-  background: rgba(255,255,255,0.10);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 20px;
-  padding: 25px;
-  margin-top: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-.hidden {
-  display: none;
-}
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            text-align: center;
+            font-size: 30px;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
 
-.category-grid,
-.difficulty-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-top: 20px;
-}
+        .subtitle {
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 13px;
+            margin-bottom: 35px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
 
-button {
-  border: none;
-  border-radius: 14px;
-  padding: 15px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  color: white;
-  background: #7042c4;
-}
+        .cat-title {
+            font-family: 'Cinzel', serif;
+            font-size: 14px;
+            color: var(--gold);
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
 
-button:hover {
-  opacity: 0.9;
-}
+        /* Difficulty Grid */
+        .diff-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 35px;
+        }
 
-.category-btn {
-  min-height: 60px;
-}
+        .diff-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            color: var(--text-white);
+            padding: 15px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
 
-.easy {
-  background: #258a4a;
-}
+        .diff-btn:hover, .diff-btn.selected {
+            border-color: var(--gold);
+            background: rgba(223, 183, 108, 0.1);
+            color: var(--gold-bright);
+            box-shadow: 0 0 15px rgba(223, 183, 108, 0.1);
+        }
 
-.medium {
-  background: #b77a16;
-}
+        /* Category List */
+        .cat-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
 
-.hard {
-  background: #a52b38;
-}
+        .cat-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
 
-.quiz-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 14px;
-  color: #ddd;
-}
+        .cat-card:hover {
+            border-color: var(--gold);
+            transform: translateX(5px);
+            background: rgba(223, 183, 108, 0.03);
+        }
 
-#question {
-  font-size: 22px;
-  line-height: 1.4;
-  margin: 25px 0;
-}
+        .cat-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
 
-.answers {
-  display: grid;
-  gap: 12px;
-}
+        .cat-name {
+            font-family: 'Cinzel', serif;
+            font-size: 16px;
+            color: var(--text-white);
+            letter-spacing: 1px;
+        }
 
-.answer-btn {
-  background: #352052;
-  border: 2px solid transparent;
-  text-align: left;
-}
+        .cat-desc {
+            font-size: 12px;
+            color: var(--text-dim);
+        }
 
-.answer-btn.correct {
-  background: #187a3b;
-  border-color: #67e69a;
-}
+        .unli-badge {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: rgba(223, 183, 108, 0.1);
+            color: var(--gold-bright);
+            border: 1px solid var(--gold);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
 
-.answer-btn.wrong {
-  background: #8b2430;
-  border-color: #ff8993;
-}
+        /* Quiz Header Meta */
+        .quiz-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
 
-#reference {
-  margin-top: 18px;
-  color: #f4d77b;
-  font-weight: bold;
-}
+        .meta-tag {
+            font-family: 'Cinzel', serif;
+            font-size: 12px;
+            letter-spacing: 1px;
+            color: var(--gold);
+        }
 
-.next-btn {
-  width: 100%;
-  margin-top: 20px;
-  background: #7650d4;
-}
+        .score-tracker {
+            font-family: 'Cinzel', serif;
+            font-size: 13px;
+            color: var(--gold-bright);
+            background: rgba(223, 183, 108, 0.05);
+            padding: 4px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(223, 183, 108, 0.2);
+        }
 
-.home-btn {
-  width: 100%;
-  margin-top: 12px;
-  background: #555;
-}
+        .question-text {
+            font-size: 20px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #ffffff;
+        }
 
-.result-score {
-  font-size: 40px;
-  font-weight: bold;
-  text-align: center;
-  margin: 20px 0;
-  color: #f4d77b;
-}
+        .options-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
 
-.center {
-  text-align: center;
-}
+        .option-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-white);
+            padding: 18px 24px;
+            border-radius: 10px;
+            font-size: 15px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
 
-@media (max-width: 500px) {
-  header h1 {
-    font-size: 25px;
-  }
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--gold);
+            background: rgba(223, 183, 108, 0.05);
+        }
 
-  .card {
-    padding: 20px;
-  }
+        .option-btn.correct {
+            background: rgba(16, 185, 129, 0.15) !important;
+            border-color: var(--success) !important;
+            color: #a7f3d0;
+        }
 
-  #question {
-    font-size: 19px;
-  }
+        .option-btn.wrong {
+            background: rgba(239, 68, 68, 0.15) !important;
+            border-color: var(--danger) !important;
+            color: #fca5a5;
+        }
 
-  .category-grid,
-  .difficulty-grid {
-    grid-template-columns: 1fr;
-  }
-}
-</style>
+        .scripture-guide {
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--text-dim);
+            font-style: italic;
+            display: block;
+        }
+
+        .quiz-footer {
+            margin-top: 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quit-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-dim);
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .quit-btn:hover {
+            color: white;
+            border-color: white;
+        }
+
+        .nav-btn {
+            background-color: var(--gold);
+            color: var(--bg-main);
+            border: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-transform: uppercase;
+            visibility: hidden;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--gold-bright);
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
+    <div class="wrapper">
+        
+        <!-- SCREEN 1: DASHBOARD -->
+        <div id="screen-dashboard" class="screen active">
+            <h1>The Grand Bible Trivia</h1>
+            <div class="subtitle">Mula Genesis hanggang Pahayag • UNLI MODE</div>
+            
+            <div class="cat-title">1. Pumili ng Antas (Difficulty):</div>
+            <div class="diff-grid">
+                <button class="diff-btn selected" id="btn-easy" onclick="setDifficulty('easy')">✨ Easy</button>
+                <button class="diff-btn" id="btn-medium" onclick="setDifficulty('medium')">📜 Medium</button>
+                <button class="diff-btn" id="btn-hard" onclick="setDifficulty('hard')">🏛️ Difficult</button>
+            </div>
 
-<header>
-  <h1>📖 Bible Mystery Challenge</h1>
-  <p>
-    Test your Bible knowledge through challenging games,
-    quizzes, clues, and mysteries.
-  </p>
-  <p><b>Name • Place • Thing • Book • Event</b></p>
-</header>
-
-<!-- HOME -->
-<div id="homeCard" class="card">
-  <h2 class="center">🎯 Choose a Category</h2>
-
-  <div class="category-grid">
-    <button class="category-btn" onclick="chooseDifficulty('Name')">
-      👤 NAME
-    </button>
-
-    <button class="category-btn" onclick="chooseDifficulty('Place')">
-      📍 PLACE
-    </button>
-
-    <button class="category-btn" onclick="chooseDifficulty('Thing')">
-      🏺 THING
-    </button>
-
-    <button class="category-btn" onclick="chooseDifficulty('Book')">
-      📚 BOOK
-    </button>
-
-    <button class="category-btn" onclick="chooseDifficulty('Event')">
-      ⚡ EVENT
-    </button>
-  </div>
-</div>
-
-<!-- DIFFICULTY -->
-<div id="difficultyCard" class="card hidden">
-
-  <h2 class="center">🔥 Choose Difficulty</h2>
-
-  <p class="center">
-    Category: <b id="selectedCategory"></b>
-  </p>
-
-  <div class="difficulty-grid">
-
-    <button class="easy" onclick="startQuiz('Easy')">
-      🟢 EASY
-    </button>
-
-    <button class="medium" onclick="startQuiz('Medium')">
-      🟡 MEDIUM
-    </button>
-
-    <button class="hard" onclick="startQuiz('Hard')">
-      🔴 HARD
-    </button>
-
-  </div>
-
-  <button class="home-btn" onclick="goHome()">
-    🏠 Back to Categories
-  </button>
-
-</div>
-
-<!-- QUIZ -->
-<div id="quizCard" class="card hidden">
-
-  <div class="quiz-top">
-    <span id="categoryDisplay"></span>
-    <span id="difficultyDisplay"></span>
-  </div>
-
-  <div class="quiz-top">
-    <span id="questionNumber"></span>
-    <span id="scoreDisplay">Score: 0</span>
-  </div>
-
-  <h2 id="question"></h2>
-
-  <div id="answers" class="answers"></div>
-
-  <div id="reference"></div>
-
-  <button id="nextButton" class="next
+            <div class="cat-title">2. Pumili ng Kategorya para sa Walang-Humpay na Tanong:</div>
+            <div class="cat-grid">
+                <div class="cat-card" onclick="startUnliTrivia('names')">
+                    <div class="cat-info">
+                        <span class="cat-name">👤 Names (Mga Pangalan)</span>
+                        <span class="cat-desc">Mga karakter, propeta, hari, at mga tapat na lingkod.</span>
+                    </div>
+                    <span class="unli-badge">UNLI</span>
+                </div>
+                <div class="cat-card" onclick="startUnliTrivia('places')">
+                    <div class="cat-info">
+                        <span class="cat-name">📍 Places (Mga Lugar)</span>
