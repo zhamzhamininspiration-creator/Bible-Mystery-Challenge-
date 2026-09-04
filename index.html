@@ -13,7 +13,7 @@
 
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: Georgia, serif;
     background: linear-gradient(135deg, #111827, #312e81);
     color: white;
     min-height: 100vh;
@@ -21,24 +21,24 @@ body {
 
 .container {
     width: 92%;
-    max-width: 900px;
+    max-width: 800px;
     margin: auto;
-    padding: 30px 10px;
+    padding: 25px 10px;
 }
 
 header {
     text-align: center;
-    padding: 25px 10px;
+    padding: 20px 10px;
 }
 
 header h1 {
-    font-size: 34px;
+    font-size: 32px;
     margin-bottom: 10px;
 }
 
 header p {
     color: #ddd;
-    font-size: 16px;
+    line-height: 1.6;
 }
 
 .card {
@@ -54,6 +54,7 @@ header p {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
+    margin-top: 20px;
 }
 
 .category {
@@ -71,11 +72,20 @@ header p {
     transform: scale(1.03);
 }
 
+.info {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    color: #ddd;
+    font-size: 14px;
+}
+
 .question {
     font-size: 22px;
     font-weight: bold;
     line-height: 1.5;
-    margin: 20px 0;
+    margin: 25px 0;
 }
 
 .answers {
@@ -98,16 +108,9 @@ header p {
     background: rgba(255,255,255,0.18);
 }
 
-.info {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    flex-wrap: wrap;
-    color: #ddd;
-}
-
-button {
-    font-family: inherit;
+.answer:disabled {
+    cursor: default;
+    opacity: 1;
 }
 
 .next {
@@ -123,21 +126,43 @@ button {
     cursor: pointer;
 }
 
-.hidden {
-    display: none;
+.next:hover {
+    transform: scale(1.02);
+}
+
+.reference {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.10);
+    text-align: center;
+    font-size: 14px;
+}
+
+.score {
+    font-size: 45px;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px;
 }
 
 .result {
     text-align: center;
 }
 
-.score {
-    font-size: 40px;
-    font-weight: bold;
-    margin: 20px;
+.hidden {
+    display: none;
+}
+
+footer {
+    text-align: center;
+    margin: 25px 0;
+    font-size: 13px;
+    color: #ddd;
 }
 
 @media (max-width: 600px) {
+
     header h1 {
         font-size: 27px;
     }
@@ -159,15 +184,23 @@ button {
 
 <header>
     <h1>📖 Bible Mystery Challenge</h1>
+
     <p>
         Test your Bible knowledge through challenging
         games, quizzes, clues, and mysteries.
     </p>
+
+    <p>
+        <b>Name • Place • Thing • Book • Event</b>
+    </p>
 </header>
+
+
+<!-- HOME -->
 
 <div id="home" class="card">
 
-    <h2>Choose Your Challenge</h2>
+    <h2>🔎 Choose Your Challenge</h2>
 
     <div class="categories">
 
@@ -195,17 +228,33 @@ button {
 
 </div>
 
+
+<!-- QUIZ -->
+
 <div id="quiz" class="card hidden">
 
     <div class="info">
-        <span id="categoryName"></span>
-        <span id="questionNumber"></span>
-        <span id="scoreText">Score: 0</span>
+
+        <span id="categoryName">
+            Category
+        </span>
+
+        <span id="questionNumber">
+            Question 1
+        </span>
+
+        <span id="scoreText">
+            Score: 0
+        </span>
+
     </div>
+
 
     <div id="question" class="question"></div>
 
+
     <div id="answers" class="answers"></div>
+
 
     <button class="next" onclick="nextQuestion()">
         Next Question ➡️
@@ -213,11 +262,16 @@ button {
 
 </div>
 
+
+<!-- RESULT -->
+
 <div id="result" class="card result hidden">
 
     <h2>🎉 Challenge Complete!</h2>
 
-    <div id="finalScore" class="score"></div>
+    <div id="finalScore" class="score">
+        0 / 0
+    </div>
 
     <p id="finalMessage"></p>
 
@@ -227,468 +281,584 @@ button {
 
 </div>
 
+
+<footer>
+    ✨ Bible Mystery Challenge • Grow in Bible Knowledge ✨
+</footer>
+
 </div>
 
-<script>// ===============================
-// BIBLE MYSTERY CHALLENGE
-// QUESTION BANK
-// ===============================
+
+<script>
+
+/* =================================
+   QUESTION BANK
+================================= */
 
 const questions = {
 
 Name: [
+
 {
 q: "Who was the father of Methuselah?",
 a: ["Enoch", "Lamech", "Jared", "Seth"],
 c: 0,
 ref: "Genesis 5:21"
 },
+
 {
 q: "Who was the mother of Ishmael?",
 a: ["Sarah", "Rebekah", "Hagar", "Rachel"],
 c: 2,
 ref: "Genesis 16:15"
 },
+
 {
 q: "Who was the first son of Jacob born to Rachel?",
 a: ["Joseph", "Benjamin", "Reuben", "Levi"],
 c: 0,
 ref: "Genesis 30:22-24"
 },
+
 {
 q: "Who was the Egyptian woman Joseph married?",
 a: ["Zipporah", "Asenath", "Miriam", "Abigail"],
 c: 1,
 ref: "Genesis 41:45"
 },
+
 {
 q: "Who interpreted Pharaoh's dreams in Egypt?",
 a: ["Moses", "Aaron", "Joseph", "Daniel"],
 c: 2,
 ref: "Genesis 41:15-16"
 },
+
 {
 q: "Who was the sister of Moses and Aaron?",
 a: ["Miriam", "Deborah", "Hannah", "Naomi"],
 c: 0,
 ref: "Exodus 15:20"
 },
+
 {
 q: "Who was Moses' wife?",
 a: ["Miriam", "Zipporah", "Rahab", "Ruth"],
 c: 1,
 ref: "Exodus 2:21"
 },
+
 {
 q: "Who succeeded Moses as leader of Israel?",
 a: ["Caleb", "Joshua", "Aaron", "Eleazar"],
 c: 1,
 ref: "Joshua 1:1-2"
 },
+
 {
 q: "Who hid the Israelite spies in Jericho?",
 a: ["Rahab", "Ruth", "Deborah", "Jael"],
 c: 0,
 ref: "Joshua 2:1-6"
 },
+
 {
 q: "Who killed Sisera?",
 a: ["Deborah", "Jael", "Delilah", "Rahab"],
 c: 1,
 ref: "Judges 4:21"
 },
+
 {
 q: "Who was known for extraordinary physical strength?",
 a: ["Gideon", "Samson", "Jephthah", "Ehud"],
 c: 1,
 ref: "Judges 14:6"
 },
-{
-q: "Who was Samson's mother?",
-a: ["Hannah", "Manoah's wife", "Naomi", "Michal"],
-c: 1,
-ref: "Judges 13:2-3"
-},
+
 {
 q: "Who was Ruth's mother-in-law?",
 a: ["Hannah", "Naomi", "Rachel", "Miriam"],
 c: 1,
 ref: "Ruth 1:4"
 },
-{
-q: "Who was Ruth's husband?",
-a: ["Boaz", "Obed", "Jesse", "Elimelech"],
-c: 0,
-ref: "Ruth 4:13"
-},
+
 {
 q: "Who was the mother of Samuel?",
 a: ["Hannah", "Peninnah", "Naomi", "Elizabeth"],
 c: 0,
 ref: "1 Samuel 1:20"
 },
+
 {
 q: "Who anointed David as king?",
 a: ["Samuel", "Saul", "Nathan", "Gad"],
 c: 0,
 ref: "1 Samuel 16:13"
 },
+
 {
 q: "Who was David's close friend and Saul's son?",
 a: ["Jonathan", "Abner", "Joab", "Ishbosheth"],
 c: 0,
 ref: "1 Samuel 18:1"
 },
-{
-q: "Who was David's first wife?",
-a: ["Abigail", "Michal", "Bathsheba", "Ahinoam"],
-c: 1,
-ref: "1 Samuel 18:27"
-},
+
 {
 q: "Who confronted David about his sin with Bathsheba?",
 a: ["Nathan", "Samuel", "Gad", "Joab"],
 c: 0,
 ref: "2 Samuel 12:1-7"
 },
+
 {
 q: "Who was Solomon's mother?",
 a: ["Michal", "Bathsheba", "Abigail", "Hannah"],
 c: 1,
 ref: "2 Samuel 12:24"
 },
+
 {
 q: "Who was the prophet who challenged the prophets of Baal?",
 a: ["Elijah", "Elisha", "Isaiah", "Jeremiah"],
 c: 0,
 ref: "1 Kings 18:20-24"
 },
+
 {
 q: "Who succeeded Elijah as prophet?",
 a: ["Elisha", "Isaiah", "Jeremiah", "Micah"],
 c: 0,
 ref: "1 Kings 19:16"
 },
-{
-q: "Who was healed of leprosy after washing in the Jordan?",
-a: ["Naaman", "Gehazi", "Ahab", "Hezekiah"],
-c: 0,
-ref: "2 Kings 5:14"
-},
+
 {
 q: "Who was swallowed by a great fish?",
 a: ["Jonah", "Nahum", "Amos", "Obadiah"],
 c: 0,
 ref: "Jonah 1:17"
 },
+
 {
 q: "Who interpreted the handwriting on the wall?",
 a: ["Joseph", "Daniel", "Ezra", "Nehemiah"],
 c: 1,
 ref: "Daniel 5:17-28"
 },
+
 {
 q: "Who was thrown into the lions' den?",
 a: ["Daniel", "Jeremiah", "Ezekiel", "Nehemiah"],
 c: 0,
 ref: "Daniel 6:16"
 },
+
 {
 q: "Who was the mother of Jesus?",
 a: ["Martha", "Mary", "Elizabeth", "Anna"],
 c: 1,
 ref: "Matthew 1:18"
 },
+
 {
 q: "Who baptized Jesus?",
 a: ["Peter", "John the Baptist", "James", "Andrew"],
 c: 1,
 ref: "Matthew 3:13"
 },
+
 {
 q: "Who betrayed Jesus for thirty pieces of silver?",
 a: ["Peter", "Judas Iscariot", "Thomas", "Matthew"],
 c: 1,
 ref: "Matthew 26:14-16"
 },
+
 {
 q: "Who denied Jesus three times?",
 a: ["John", "Peter", "James", "Andrew"],
 c: 1,
 ref: "Matthew 26:69-75"
 },
+
 {
 q: "Who was the first Christian martyr recorded in Acts?",
 a: ["Stephen", "James", "Barnabas", "Philip"],
 c: 0,
 ref: "Acts 7:54-60"
 },
+
 {
 q: "Who was known as Saul before becoming an apostle?",
 a: ["Paul", "Peter", "Silas", "Barnabas"],
 c: 0,
 ref: "Acts 13:9"
 },
+
 {
 q: "Who was Paul's companion who was imprisoned with him at Philippi?",
 a: ["Timothy", "Silas", "Titus", "Luke"],
 c: 1,
 ref: "Acts 16:25"
 },
+
 {
 q: "Who was the apostle known as 'Doubting Thomas'?",
 a: ["Thomas", "Philip", "Bartholomew", "Matthew"],
 c: 0,
 ref: "John 20:24-29"
 },
+
 {
 q: "Who was the disciple Jesus loved?",
 a: ["Peter", "John", "James", "Andrew"],
 c: 1,
 ref: "John 21:20-24"
 }
+
 ],
 
+
 Place: [
+
 {
 q: "Where was Jesus born?",
 a: ["Bethlehem", "Jerusalem", "Nazareth", "Capernaum"],
 c: 0,
 ref: "Matthew 2:1"
 },
+
 {
 q: "Where did Moses receive the Ten Commandments?",
 a: ["Mount Carmel", "Mount Sinai", "Mount Zion", "Mount Nebo"],
 c: 1,
 ref: "Exodus 19:20"
 },
+
 {
 q: "Where did Jesus grow up?",
 a: ["Bethany", "Nazareth", "Jericho", "Bethlehem"],
 c: 1,
 ref: "Matthew 2:23"
 },
+
 {
 q: "Where did Jesus turn water into wine?",
 a: ["Cana", "Bethany", "Jerusalem", "Jericho"],
 c: 0,
 ref: "John 2:1-11"
 },
+
 {
 q: "Where was Jesus crucified?",
 a: ["Gethsemane", "Golgotha", "Bethany", "Emmaus"],
 c: 1,
 ref: "John 19:17"
 },
+
 {
 q: "Where did Jesus pray before His arrest?",
 a: ["Gethsemane", "Cana", "Bethlehem", "Jericho"],
 c: 0,
 ref: "Matthew 26:36"
 },
+
 {
 q: "Where did Noah's ark come to rest?",
 a: ["Mount Sinai", "Mount Ararat", "Mount Carmel", "Mount Zion"],
 c: 1,
 ref: "Genesis 8:4"
 },
+
 {
 q: "Where did Lot live before Sodom was destroyed?",
 a: ["Jericho", "Sodom", "Bethlehem", "Nineveh"],
 c: 1,
 ref: "Genesis 13:12"
 },
+
 {
 q: "Where did Jonah preach after being released from the fish?",
 a: ["Nineveh", "Babylon", "Jerusalem", "Damascus"],
 c: 0,
 ref: "Jonah 3:3-4"
 },
+
 {
 q: "Where did Elijah confront the prophets of Baal?",
 a: ["Mount Sinai", "Mount Carmel", "Mount Nebo", "Mount Zion"],
 c: 1,
 ref: "1 Kings 18:19-20"
 },
+
 {
 q: "Where was Daniel taken as a captive?",
 a: ["Egypt", "Babylon", "Assyria", "Rome"],
 c: 1,
 ref: "Daniel 1:1-6"
 },
+
 {
 q: "Where were Jesus' followers first called Christians?",
 a: ["Jerusalem", "Antioch", "Rome", "Corinth"],
 c: 1,
 ref: "Acts 11:26"
 },
+
 {
 q: "Where did Paul and Silas sing hymns at midnight?",
 a: ["Philippi", "Ephesus", "Corinth", "Athens"],
 c: 0,
 ref: "Acts 16:12,25"
 },
+
 {
 q: "Where did Paul speak at the Areopagus?",
 a: ["Athens", "Rome", "Corinth", "Antioch"],
 c: 0,
 ref: "Acts 17:22"
 },
+
 {
 q: "Where did Jesus meet the Samaritan woman?",
 a: ["Jacob's well", "Temple", "Jordan River", "Sea of Galilee"],
 c: 0,
 ref: "John 4:6-7"
 }
+
 ],
 
+
 Thing: [
+
 {
 q: "What did David use to defeat Goliath?",
 a: ["Sword", "Sling", "Spear", "Bow"],
 c: 1,
 ref: "1 Samuel 17:49"
 },
+
 {
 q: "What did Noah build?",
 a: ["Temple", "Ark", "Altar", "Tower"],
 c: 1,
 ref: "Genesis 6:14"
 },
+
 {
 q: "What did God provide for Israel as food in the wilderness?",
 a: ["Manna", "Grapes", "Figs", "Olives"],
 c: 0,
 ref: "Exodus 16:15"
 },
-{
-q: "What object did Moses lift up when the Israelites were attacked by Amalek?",
-a: ["His staff", "A sword", "A scroll", "A spear"],
-c: 0,
-ref: "Exodus 17:9-11"
-},
-{
-q: "What did Aaron's staff become?",
-a: ["A serpent", "A dove", "A tree", "A river"],
-c: 0,
-ref: "Exodus 7:9-10"
-},
+
 {
 q: "What did the Israelites worship when Moses was on Mount Sinai?",
 a: ["A bronze serpent", "A golden calf", "A golden eagle", "A silver statue"],
 c: 1,
 ref: "Exodus 32:4"
 },
+
 {
 q: "What did Samson use to kill a thousand Philistines?",
 a: ["Jawbone of a donkey", "Sword", "Sling", "Spear"],
 c: 0,
 ref: "Judges 15:15"
 },
+
 {
 q: "What did Jael use to kill Sisera?",
 a: ["A sword", "A tent peg", "A stone", "A spear"],
 c: 1,
 ref: "Judges 4:21"
 },
+
 {
 q: "What instrument did David play for Saul?",
 a: ["Harp", "Trumpet", "Flute", "Drum"],
 c: 0,
 ref: "1 Samuel 16:23"
 },
+
 {
 q: "What did Solomon ask God for?",
 a: ["Wealth", "Wisdom", "Long life", "Military power"],
 c: 1,
 ref: "1 Kings 3:9"
 },
-{
-q: "What unusual object floated after Elisha threw a stick into the water?",
-a: ["An iron axe head", "A sword", "A shield", "A stone"],
-c: 0,
-ref: "2 Kings 6:6"
-},
+
 {
 q: "What did Jesus use to wash His disciples' feet?",
 a: ["Oil", "Water", "Wine", "Milk"],
 c: 1,
 ref: "John 13:5"
 },
+
 {
 q: "What did Jesus use to feed the five thousand?",
 a: ["Five loaves and two fish", "Seven loaves", "Two fish only", "Manna"],
 c: 0,
 ref: "Matthew 14:17-20"
 },
+
 {
 q: "What did Jesus write with when He wrote on the ground?",
 a: ["A pen", "His finger", "A stick", "Charcoal"],
 c: 1,
 ref: "John 8:6"
 },
+
 {
 q: "What appeared above the disciples at Pentecost?",
 a: ["Tongues like fire", "A cloud of smoke", "A rainbow", "Doves"],
 c: 0,
 ref: "Acts 2:3"
-},
-{
-q: "What fell from heaven while Saul was traveling to Damascus?",
-a: ["Fire", "A bright light", "Manna", "Rain"],
-c: 1,
-ref: "Acts 9:3"
 }
+
 ],
 
+
 Book: [
+
 {
 q: "What is the first book of the Bible?",
 a: ["Genesis", "Exodus", "Matthew", "Psalms"],
 c: 0,
 ref: "Genesis 1:1"
 },
+
 {
 q: "What is the second book of the Bible?",
 a: ["Leviticus", "Exodus", "Numbers", "Deuteronomy"],
 c: 1,
 ref: "Exodus 1:1"
 },
+
 {
 q: "Which book tells the story of Ruth?",
 a: ["Ruth", "Judges", "Esther", "1 Samuel"],
 c: 0,
 ref: "Ruth 1:1"
 },
+
 {
 q: "Which book records the life and ministry of Jesus from the perspective of John?",
 a: ["Matthew", "Mark", "Luke", "John"],
 c: 3,
 ref: "John 1:1"
 },
+
 {
 q: "Which book records the early history of the Christian church?",
 a: ["Romans", "Acts", "Hebrews", "James"],
 c: 1,
 ref: "Acts 1:1-2"
 },
+
 {
 q: "Which book contains the famous 'love chapter'?",
 a: ["Romans", "1 Corinthians", "Ephesians", "1 John"],
 c: 1,
 ref: "1 Corinthians 13"
 },
+
 {
 q: "Which book is famous for its wisdom sayings?",
 a: ["Proverbs", "Leviticus", "Nahum", "Obadiah"],
 c: 0,
 ref: "Proverbs 1:1-6"
 },
+
 {
 q: "Which book contains the story of Daniel in the lions' den?",
-a: ["Ezekiel", "// ===============================
-// QUIZ SYSTEM
-// ===============================
+a: ["Ezekiel", "Daniel", "Jeremiah", "Isaiah"],
+c: 1,
+ref: "Daniel 6:16"
+},
+
+{
+q: "Which book contains the story of Esther?",
+a: ["Esther", "Ruth", "Judges", "Nehemiah"],
+c: 0,
+ref: "Esther 1:1"
+},
+
+{
+q: "Which book contains the vision of the New Jerusalem?",
+a: ["Revelation", "Romans", "Hebrews", "Acts"],
+c: 0,
+ref: "Revelation 21:1-2"
+}
+
+],
+
+
+Event: [
+
+{
+q: "What happened to Jesus on the third day?",
+a: ["He ascended", "He was resurrected", "He was born", "He disappeared"],
+c: 1,
+ref: "Luke 24:6-7"
+},
+
+{
+q: "What happened at Pentecost?",
+a: ["The Holy Spirit came upon the disciples", "Jesus was born", "Paul was imprisoned", "Noah built the ark"],
+c: 0,
+ref: "Acts 2:1-4"
+},
+
+{
+q: "What happened when Jesus was baptized?",
+a: ["The heavens opened", "The temple fell", "A fire appeared", "The sea parted"],
+c: 0,
+ref: "Matthew 3:16-17"
+},
+
+{
+q: "What happened when Jesus calmed the storm?",
+a: ["The wind and sea became calm", "The boat sank", "The disciples left", "It began to snow"],
+c: 0,
+ref: "Mark 4:39"
+},
+
+{
+q: "What happened to Lazarus?",
+a: ["He was healed", "He was raised from the dead", "He became a disciple", "He left Jerusalem"],
+c: 1,
+ref: "John 11:43-44"
+},
+
+{
+q: "What happened when the Israelites crossed the Red Sea?",
+a: ["The sea divided", "The Jordan dried up", "Fire came down", "The walls fell"],
+c: 0,
+ref: "Exodus 14:21-22"
+},
+
+{
+q: "What happened to the walls of Jericho?",
+a: ["They fell", "They grew taller", "They caught fire", "They disappeared overnight"],
+c: 0,
+ref: "Joshua 6:20"
+},
+
+{
+q: "What happened when Daniel was in the lions' den?",
+a: ["God shut the lions' mouths", "Daniel escaped immediately", "The lions ran away", "The den collapsed"],
+c: 0,
+ref: "Daniel 6:22"
+}
+
+]
+
+};
+
+
+/* =================================
+   QUIZ SYSTEM
+================================= */
 
 let currentCategory = "";
 let currentQuestion = 0;
@@ -696,80 +866,112 @@ let score = 0;
 let shuffledQuestions = [];
 let answered = false;
 
-// Shuffle questions para iba-iba ang order
+
+/* SHUFFLE */
+
 function shuffle(array) {
+
     let result = [...array];
 
     for (let i = result.length - 1; i > 0; i--) {
+
         let j = Math.floor(Math.random() * (i + 1));
 
-        [result[i], result[j]] = [result[j], result[i]];
+        [result[i], result[j]] =
+        [result[j], result[i]];
     }
 
     return result;
 }
 
 
-// START QUIZ
+/* START QUIZ */
+
 function startQuiz(category) {
 
     currentCategory = category;
+
     currentQuestion = 0;
+
     score = 0;
+
     answered = false;
 
-    // Randomize ang questions
-    shuffledQuestions = shuffle(questions[category]);
+    shuffledQuestions =
+        shuffle(questions[category]);
 
-    document.getElementById("home").classList.add("hidden");
-    document.getElementById("result").classList.add("hidden");
-    document.getElementById("quiz").classList.remove("hidden");
+    document.getElementById("home")
+        .classList.add("hidden");
 
-    document.getElementById("categoryName").textContent =
+    document.getElementById("result")
+        .classList.add("hidden");
+
+    document.getElementById("quiz")
+        .classList.remove("hidden");
+
+    document.getElementById("categoryName")
+        .textContent =
         "Category: " + category;
 
     showQuestion();
 }
 
 
-// SHOW QUESTION
+/* SHOW QUESTION */
+
 function showQuestion() {
 
     answered = false;
 
-    const q = shuffledQuestions[currentQuestion];
+    const q =
+        shuffledQuestions[currentQuestion];
 
-    document.getElementById("questionNumber").textContent =
+    document.getElementById("questionNumber")
+        .textContent =
         "Question " +
         (currentQuestion + 1) +
         " / " +
         shuffledQuestions.length;
 
-    document.getElementById("scoreText").textContent =
+    document.getElementById("scoreText")
+        .textContent =
         "Score: " + score;
 
-    document.getElementById("question").textContent = q.q;
+    document.getElementById("question")
+        .textContent = q.q;
 
     const answersContainer =
         document.getElementById("answers");
 
     answersContainer.innerHTML = "";
 
-    // Randomize rin ang choices
-    const choices = q.a.map((answer, index) => ({
-        text: answer,
-        originalIndex: index
-    }));
 
-    const shuffledChoices = shuffle(choices);
+    /* RANDOMIZE ANSWERS */
+
+    const choices =
+        q.a.map((answer, index) => ({
+
+            text: answer,
+
+            originalIndex: index
+
+        }));
+
+
+    const shuffledChoices =
+        shuffle(choices);
+
 
     shuffledChoices.forEach(choice => {
 
-        const button = document.createElement("button");
+        const button =
+            document.createElement("button");
 
         button.className = "answer";
 
-        button.textContent = choice.text;
+        button.textContent =
+            choice.text;
+
 
         button.onclick = function() {
 
@@ -782,14 +984,23 @@ function showQuestion() {
 
         };
 
-        answersContainer.appendChild(button);
+
+        answersContainer
+            .appendChild(button);
 
     });
+
 }
 
 
-// CHECK ANSWER
-function checkAnswer(selected, correct, button, reference) {
+/* CHECK ANSWER */
+
+function checkAnswer(
+    selected,
+    correct,
+    button,
+    reference
+) {
 
     if (answered) {
         return;
@@ -797,12 +1008,17 @@ function checkAnswer(selected, correct, button, reference) {
 
     answered = true;
 
+
     const answerButtons =
         document.querySelectorAll(".answer");
 
+
     answerButtons.forEach(btn => {
+
         btn.disabled = true;
+
     });
+
 
     if (selected === correct) {
 
@@ -816,43 +1032,56 @@ function checkAnswer(selected, correct, button, reference) {
         button.textContent =
             "❌ " + button.textContent;
 
-        // Hanapin ang tamang sagot
+
         answerButtons.forEach(btn => {
 
+            const cleanText =
+                btn.textContent
+                .replace("❌ ", "")
+                .replace("✅ ", "");
+
             if (
-                btn.textContent ===
-                " " + shuffledQuestions[currentQuestion].a[correct]
+                cleanText ===
+                shuffledQuestions[
+                    currentQuestion
+                ].a[correct]
             ) {
+
                 btn.textContent =
-                    "✅ " + btn.textContent;
+                    "✅ " + cleanText;
+
             }
 
         });
 
     }
 
-    document.getElementById("scoreText").textContent =
+
+    document.getElementById("scoreText")
+        .textContent =
         "Score: " + score;
 
-    // Reference ng Bible verse
+
+    /* BIBLE REFERENCE */
+
     const referenceBox =
         document.createElement("div");
 
-    referenceBox.style.marginTop = "15px";
-    referenceBox.style.padding = "12px";
-    referenceBox.style.borderRadius = "10px";
-    referenceBox.style.background =
-        "rgba(255,255,255,0.10)";
+    referenceBox.className =
+        "reference";
 
     referenceBox.textContent =
-        "📖 Bible Reference: " + reference;
+        "📖 Bible Reference: " +
+        reference;
 
     document.getElementById("answers")
         .appendChild(referenceBox);
+
 }
 
 
-// NEXT QUESTION
+/* NEXT QUESTION */
+
 function nextQuestion() {
 
     if (!answered) {
@@ -864,9 +1093,10 @@ function nextQuestion() {
         return;
     }
 
+
     currentQuestion++;
 
-    // Kapag natapos na lahat
+
     if (
         currentQuestion >=
         shuffledQuestions.length
@@ -875,13 +1105,17 @@ function nextQuestion() {
         showResult();
 
         return;
+
     }
 
+
     showQuestion();
+
 }
 
 
-// SHOW RESULT
+/* SHOW RESULT */
+
 function showResult() {
 
     document.getElementById("quiz")
@@ -890,39 +1124,53 @@ function showResult() {
     document.getElementById("result")
         .classList.remove("hidden");
 
+
     const total =
         shuffledQuestions.length;
 
+
     const percentage =
-        Math.round((score / total) * 100);
+        Math.round(
+            (score / total) * 100
+        );
+
 
     document.getElementById("finalScore")
         .textContent =
         score + " / " + total;
 
-    let message = "";
+
+    let message;
+
 
     if (percentage >= 90) {
 
         message =
-            "🏆 Bible Master! Napakahusay ng iyong Bible knowledge!";
-
-    } else if (percentage >= 75) {
-
-        message =
-            "🔥 Excellent! Malalim ang iyong kaalaman sa Bible!";
-
-    } else if (percentage >= 50) {
-
-        message =
-            "📖 Good job! Ipagpatuloy ang pagbabasa ng Bible!";
-
-    } else {
-
-        message =
-            "🙏 Keep studying God's Word. Huwag sumuko!";
+        "🏆 Bible Master! Napakahusay ng iyong Bible knowledge!";
 
     }
+
+    else if (percentage >= 75) {
+
+        message =
+        "🔥 Excellent! Malalim ang iyong kaalaman sa Bible!";
+
+    }
+
+    else if (percentage >= 50) {
+
+        message =
+        "📖 Good job! Ipagpatuloy ang pagbabasa ng Bible!";
+
+    }
+
+    else {
+
+        message =
+        "🙏 Keep studying God's Word. Huwag sumuko!";
+
+    }
+
 
     document.getElementById("finalMessage")
         .textContent =
@@ -930,10 +1178,12 @@ function showResult() {
         " Your score: " +
         percentage +
         "%";
+
 }
 
 
-// BACK TO HOME
+/* PLAY AGAIN */
+
 function goHome() {
 
     document.getElementById("result")
@@ -945,7 +1195,9 @@ function goHome() {
     document.getElementById("home")
         .classList.remove("hidden");
 
-  }</script>
+}
+
+</script>
 
 </body>
-</html>
+    </html>
