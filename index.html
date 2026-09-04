@@ -1,1 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bible Mystery Challenge</title>
 
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Georgia, serif;
+  background: linear-gradient(135deg, #f8f1df, #e8d5a8);
+  color: #3b2a16;
+}
+
+.container {
+  max-width: 700px;
+  margin: auto;
+  padding: 25px 18px;
+}
+
+.card {
+  background: rgba(255,255,255,0.95);
+  border-radius: 22px;
+  padding: 30px 22px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  text-align: center;
+}
+
+h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.categories {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+button {
+  border: none;
+  border-radius: 14px;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  background: #8b6b35;
+  color: white;
+}
+
+button:hover {
+  background: #65491f;
+}
+
+.quiz {
+  display: none;
+  margin-top: 25px;
+  padding: 20px;
+  border-radius: 16px;
+  background: #faf5e8;
+}
+
+.question {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 18px;
+}
+
+.answer {
+  margin: 8px 0;
+  width: 100%;
+}
+
+#result {
+  margin-top: 15px;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+footer {
+  margin-top: 25px;
+  font-size: 13px;
+  opacity: 0.7;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="card">
+
+    <h1>📖 Bible Mystery Challenge</h1>
+
+    <p class="subtitle">
+      Test your Bible knowledge through challenging games,
+      quizzes, clues, and mysteries.
+    </p>
+
+    <p>
+      <b>Name • Place • Thing • Book • Event</b>
+    </p>
+
+    <div class="categories">
+      <button onclick="startQuiz('Name')">👤 Name</button>
+      <button onclick="startQuiz('Place')">📍 Place</button>
+      <button onclick="startQuiz('Thing')">📦 Thing</button>
+      <button onclick="startQuiz('Book')">📖 Book</button>
+      <button onclick="startQuiz('Event')">⚡ Event</button>
+    </div>
+
+    <div class="quiz" id="quiz">
+      <h2 id="category"></h2>
+
+      <div class="question" id="question"></div>
+
+      <button class="answer" onclick="checkAnswer(0)" id="a0"></button>
+      <button class="answer" onclick="checkAnswer(1)" id="a1"></button>
+      <button class="answer" onclick="checkAnswer(2)" id="a2"></button>
+
+      <div id="result"></div>
+
+      <br>
+
+      <button onclick="nextQuestion()">➡️ Next Question</button>
+    </div>
+
+    <footer>
+      ✨ Bible Mystery Challenge • Grow in Bible Knowledge ✨
+    </footer>
+
+  </div>
+</div>
+
+<script>
+
+const questions = {
+
+Name: [
+{
+q: "Who built the ark?",
+a: ["Noah", "Moses", "David"],
+correct: 0
+},
+{
+q: "Who defeated Goliath?",
+a: ["Solomon", "David", "Peter"],
+correct: 1
+}
+],
+
+Place: [
+{
+q: "Where was Jesus born?",
+a: ["Bethlehem", "Jerusalem", "Nazareth"],
+correct: 0
+},
+{
+q: "Where did Moses receive the Ten Commandments?",
+a: ["Mount Sinai", "Mount Carmel", "Mount Zion"],
+correct: 0
+}
+],
+
+Thing: [
+{
+q: "What did David use to defeat Goliath?",
+a: ["Sword", "Sling", "Spear"],
+correct: 1
+},
+{
+q: "What did Noah build?",
+a: ["Temple", "Ark", "Tower"],
+correct: 1
+}
+],
+
+Book: [
+{
+q: "What is the first book of the Bible?",
+a: ["Genesis", "Exodus", "Matthew"],
+correct: 0
+},
+{
+q: "What is the last book of the Bible?",
+a: ["John", "Revelation", "Acts"],
+correct: 1
+}
+],
+
+Event: [
+{
+q: "Who was raised from the dead after four days?",
+a: ["Lazarus", "Stephen", "James"],
+correct: 0
+},
+{
+q: "What happened to Jesus on the third day?",
+a: ["He ascended", "He was resurrected", "He was born"],
+correct: 1
+}
+]
+
+};
+
+let currentCategory = "";
+let currentQuestion = 0;
+
+function startQuiz(category) {
+  currentCategory = category;
+  currentQuestion = 0;
+
+  document.getElementById("quiz").style.display = "block";
+  document.getElementById("category").innerText =
+    "🔎 " + category + " Mystery";
+
+  showQuestion();
+}
+
+function showQuestion() {
+
+  let q = questions[currentCategory][currentQuestion];
+
+  document.getElementById("question").innerText = q.q;
+
+  document.getElementById("a0").innerText = q.a[0];
+  document.getElementById("a1").innerText = q.a[1];
+  document.getElementById("a2").innerText = q.a[2];
+
+  document.getElementById("result").innerText = "";
+}
+
+function checkAnswer(answer) {
+
+  let q = questions[currentCategory][currentQuestion];
+
+  if(answer === q.correct) {
+    document.getElementById("result").innerText =
+      "🎉 Correct! Great Bible knowledge!";
+  } else {
+    document.getElementById("result").innerText =
+      "❌ Not quite. Try the next question!";
+  }
+}
+
+function nextQuestion() {
+
+  currentQuestion++;
+
+  if(currentQuestion >= questions[currentCategory].length) {
+    currentQuestion = 0;
+  }
+
+  showQuestion();
+}
+
+</script>
+
+</body>
+  </html>
